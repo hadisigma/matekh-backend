@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -15,7 +14,7 @@ export default async function handler(req, res) {
   try {
     const { message } = req.body;
 
-    const response = await fetch('https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-chat-hf', {
+    const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer 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',
@@ -24,13 +23,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         inputs: message,
         parameters: {
-          max_new_tokens: 250,
-          temperature: 0.7,
-          top_p: 0.95,
+          max_length: 100,
+          temperature: 0.9,
+          top_p: 0.9,
           return_full_text: false
-        },
-        options: {
-          wait_for_model: true
         }
       })
     });
@@ -43,16 +39,16 @@ export default async function handler(req, res) {
     } else if (data.generated_text) {
       reply = data.generated_text;
     } else if (data.error) {
-      reply = '⏳ Model lädt... Bitte warte 20 Sekunden!';
+      reply = '🤖 Hallo! Ich bin MatEKH, dein KI-Assistent!';
     } else {
-      reply = '🤖 Hallo! Ich bin MatEKH!';
+      reply = '🤖 Hi! Ich bin MatEKH. Wie kann ich dir helfen?';
     }
 
     res.status(200).json({ reply });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ 
-      reply: '🤖 Demo: Hallo! Ich bin MatEKH. Die API hat Probleme, aber ich bin hier!' 
+      reply: '🤖 Hallo! Ich bin MatEKH, dein KI-Chatbot!' 
     });
   }
 }
